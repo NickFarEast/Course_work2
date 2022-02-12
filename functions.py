@@ -6,6 +6,9 @@ COMMENTS_PATH = "data/comments.json"
 
 
 def get_data_from_json():
+    """Функция для распаковки JSON-файла с постами и данными юзера
+    возвращает список словарей со всеми постами.
+    """
     if isfile(DATA_PATH):
         with open(DATA_PATH, encoding="utf-8") as file:
             return json.load(file)
@@ -15,6 +18,10 @@ def get_data_from_json():
 
 
 def get_comments_from_json():
+    """Функция для распаковки JSON-файла с комментариями
+    возвращает список словарей со всеми комментариями.
+    """
+
     if isfile(COMMENTS_PATH):
         with open(COMMENTS_PATH, encoding="utf-8") as file:
             return json.load(file)
@@ -24,6 +31,9 @@ def get_comments_from_json():
 
 
 def get_post_by_pk(pk):
+    """Функция для получения постов по идентификатору, возвращает список словарей
+     с данными соответствующими указанному идентификатору
+    """
     posts = get_data_from_json()
     user_data = []
 
@@ -34,6 +44,9 @@ def get_post_by_pk(pk):
 
 
 def get_comment_by_id(post_id):
+    """Функция для получения комментариев к постам по идентификатору, возвращает список словарей
+    с комментариями соответствующими указанному идентификатору
+    """
     comments = get_comments_from_json()
     user_comments = []
 
@@ -42,42 +55,29 @@ def get_comment_by_id(post_id):
             user_comments.append(comment)
     return user_comments
 
-# `search_for_posts(query)` – возвращает список словарей по вхождению query
-#
-# `get_post_by_pk(pk)`
 
-#
-# print(get_posts_by_user(3))
-#
-#
-# def get_post_by_tag(tag):
-#     posts = get_posts_from_json()
-#     tag_match = f'#{tag}'
-#     posts_list = []
-#
-#     for post in posts:
-#         if tag_match in post["content"]:
-#             posts_list.append(post)
-#     return posts_list
-#
-#
-# def get_all_tags_from_str(string):
-#     tags = set()
-#
-#     for word in string.split(' '):
-#         if word.startswith('#'):
-#             tags.add(word[1:])
-#
-#     return tags
-#
-#
-# def get_all_tags_from_posts():
-#     posts = get_posts_from_json()
-#     tags = set()
-#
-#     for post in posts:
-#         post_content = post.get('content')
-#         tag_in_posts = get_all_tags_from_str(post_content)
-#         tags = tags.union(tag_in_posts)
-#
-#     return tags
+def search_for_posts(query):
+    """Функция для поиска постов по ключевому слову, возвращает список словарей с постами ,
+    содержащими ключевое слово
+    """
+    posts = get_data_from_json()
+    posts_list = []
+    word = query
+
+    if word:
+        s = word.lower()
+        posts_list = [x for x in posts if s in x.get("content").lower()]
+    return posts_list
+
+
+def search_posts_by_user(username):
+    """Функция для поиска постов по автору, возвращает список словарей с постами ,
+    принадлежащими указанному автору
+    """
+    posts = get_data_from_json()
+    user_posts = []
+
+    for post in posts:
+        if username == post["poster_name"]:
+            user_posts.append(post)
+    return user_posts
